@@ -8,12 +8,13 @@ Building A Streaming Fraud Detection System With Kafka + Python
 docker-compose -f docker-compose.kafka.yml build && docker-compose -f docker-compose.kafka.yml up
 ```
 
-* Step 2: Build and start the producer (generator)
+* Step 2: Build and start the producer (generator) and consumer (detector)
 ```
 docker-compose build && docker-compose up
 ```
 
 * Test the consumer using built-in `kafka-console-consumer`
 ```
-docker-compose -f docker-compose.kafka.yml exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic queueing.transactions --from-beginning
+docker-compose -f docker-compose.kafka.yml exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic streaming.transactions.fraud
+docker-compose -f docker-compose.kafka.yml exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic streaming.transactions.legit
 ```
