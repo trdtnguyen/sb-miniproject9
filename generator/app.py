@@ -14,9 +14,10 @@ TRANSACTIONS_PER_SECOND = float(os.environ.get("TRANSACTIONS_PER_SECOND"))
 SLEEP_TIME = 1 / TRANSACTIONS_PER_SECOND
 
 if __name__ == "__main__":
-   producer = KafkaProducer(bootstrap_servers=KAFKA_BROKER_URL,
-                            value_serializer=lambda value: json.dumps(value).encode()
-                           )
+   producer = KafkaProducer(
+       bootstrap_servers=KAFKA_BROKER_URL,
+       value_serializer=lambda value: json.dumps(value).encode()
+   )
 
    # infinity loop
    while True:
