@@ -12,6 +12,7 @@ We implement our app containers as independent modules such that each of them ha
 ├── detector
 │   ├── app.py
 │   ├── Dockerfile
+│   ├── __init__.py
 │   └── requirements.txt
 ├── docker-compose.kafka.yml
 ├── docker-compose.yml
