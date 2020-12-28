@@ -1,26 +1,27 @@
 # sb-miniproject9
 Building A Streaming Fraud Detection System With Kafka + Python + Docker Compose
 
-
-## How to run
-* Step 1: Build and start the kafka container
-```
-docker-compose -f docker-compose.kafka.yml build && docker-compose -f docker-compose.kafka.yml up
-```
-
-* Step 2: Build and start the producer (generator) and consumer (detector)
-```
-docker-compose build && docker-compose up
-```
-
-* Test the consumer using built-in `kafka-console-consumer`
-```
-docker-compose -f docker-compose.kafka.yml exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic streaming.transactions.fraud
-docker-compose -f docker-compose.kafka.yml exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic streaming.transactions.legit
-```
 ## Application Design and Implementation
 As illustrated in the below figure, we use two docker container groups that work independently and share the same network. One is for the background Kafka service (zookeeper + kafka borker) and another is for our application (producer + consumer).
+
 ![Application Design](images/diagram.jpg)
+We implement our app containers as independent modules such that each of them has its own directory with a Dockerfile
+
+```
+├── detector
+│   ├── app.py
+│   ├── Dockerfile
+│   └── requirements.txt
+├── docker-compose.kafka.yml
+├── docker-compose.yml
+├── generator
+│   ├── app.py
+│   ├── Dockerfile
+│   ├── __init__.py
+│   ├── requirements.txt
+│   └── transactions.py
+
+```
 ### Kafka container
 In this container group, we use zookeeper and kafka images (broker) from Confluentinc. The broker listens on port 9092 (`KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://broker:9092`) and connect to the zookeeper through port 32181 (`KAFKA_ZOOKEEPER_CONNECT=zookeeper:32181`).
 
@@ -82,3 +83,21 @@ We implement our application followed the single-event processing design pattern
 
 * ***How to generate the transation?*** We define a simple transaction schema (```source: str, target: str, amount: float, currency: str```) then generate random transaction records using a helper function.
 * ***How to classify events?***: We assume that a transaction event is fraud if its amount exceed $900.
+
+
+## How to run
+* Step 1: Build and start the kafka container
+```
+docker-compose -f docker-compose.kafka.yml build && docker-compose -f docker-compose.kafka.yml up
+```
+
+* Step 2: Build and start our application container (generator and detector)
+```
+docker-compose build && docker-compose up
+```
+
+* Test the consumer using built-in `kafka-console-consumer`
+```
+docker-compose -f docker-compose.kafka.yml exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic streaming.transactions.fraud
+docker-compose -f docker-compose.kafka.yml exec broker kafka-console-consumer --bootstrap-server localhost:9092 --topic streaming.transactions.legit
+```
