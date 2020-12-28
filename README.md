@@ -5,7 +5,8 @@ Building A Streaming Fraud Detection System With Kafka + Python + Docker Compose
 As illustrated in the below figure, we use two docker container groups that work independently and share the same network. One is for the background Kafka service (zookeeper + kafka borker) and another is for our application (producer + consumer).
 
 ![Application Design](images/diagram.jpg)
-We implement our app containers as independent modules such that each of them has its own directory with a Dockerfile
+
+We implement our app containers as independent modules such that each of them has its own directory with a Dockerfile. The overall directory layout is:
 
 ```
 ├── detector
