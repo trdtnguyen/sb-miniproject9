@@ -1,5 +1,5 @@
 # sb-miniproject9
-Building A Streaming Fraud Detection System With Kafka + Python
+Building A Streaming Fraud Detection System With Kafka + Python + Docker Compose
 
 
 ## How to run
@@ -53,5 +53,32 @@ docker-compose.kafka.yml
 
 ```
 ## Application container
-We implement our application followed the single-event processing design pattern such that the pruducer writes transaction events into one topic and the consumer reads events in that topic and uses a helper function to classify the event type (legit/fraud). 
+We implement our application followed the single-event processing design pattern such that the pruducer writes transaction events into one topic and the consumer reads events in that topic and uses a helper function to classify the event type (legit/fraud). To connect our app container group with Kafka container group, we use the same network configuration in docker-compose file and connect our app to kafka borker through enrionment variable `KAFKA_BROKER_URL: broker:9092`
+
+`docker-compose.yml`:
+```
+ version: "3" 
+ 
+ services:                                                                                                                                                                                                        
+     generator:
+         build: ./generator
+         environment:
+             KAFKA_BROKER_URL: broker:9092
+             TRANSACTIONS_TOPIC: queueing.transactions
+             TRANSACTIONS_PER_SECOND: 1000
+     detector:
+         build: ./detector
+         environment:
+             KAFKA_BROKER_URL: broker:9092
+             TRANSACTIONS_TOPIC: queueing.transactions
+             LEGIT_TOPIC: streaming.transactions.legit
+             FRAUD_TOPIC: streaming.transactions.fraud
+      
+ networks:
+     default:
+         external:
+             name: kafka-network
+```
+
+* ***How to generate the transation?*** We define a simple transaction schema (```source: str, target: str, amount: float, currency: str```) then generate random transaction records using a helper function.
 * ***How to classify events?***: We assume that a transaction event is fraud if its amount exceed $900.
