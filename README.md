@@ -1,4 +1,4 @@
-# sb-miniproject9
+# Streaming Fraud Detection (sb-miniproject9)
 Building A Streaming Fraud Detection System With Kafka + Python + Docker Compose
 
 ## Application Design and Implementation
